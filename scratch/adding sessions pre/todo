@@ -1,0 +1,25 @@
+add models folder
+demo export and import
+utils.js and test.js
+
+model for posts
+model for users
+
+prebuilt views with nav
+
+discuss problems with user accounts
+how do we know who is logged in, whoich user we are dealing with?
+The browser is stateless
+How can the server keep track of who is logged in, connected?
+How can server and client agree on logged in user state?
+
+Introduce sessions
+demonstrate on another logged in app
+look at local memory
+
+add the code and modifications
+local memory
+
+Number the sections of code with order to add
+Plan the slide narrative around this
+
