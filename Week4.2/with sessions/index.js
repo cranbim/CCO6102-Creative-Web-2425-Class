@@ -77,8 +77,13 @@ app.post('/login', (request, response)=>{
 
 
 app.get('/logout', (request, response)=>{
-    request.session.destroy()
     response.sendFile(path.join(__dirname, '/views', 'logout.html'))
+})
+
+app.post('/logout', (request, response)=>{
+    request.session.destroy()
+    response.sendFile(path.join(__dirname, '/views', 'notloggedin.html'))
+
 })
 
 
