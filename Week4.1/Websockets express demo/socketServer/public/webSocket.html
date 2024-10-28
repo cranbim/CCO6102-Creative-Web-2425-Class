@@ -1,0 +1,50 @@
+<html>
+<head>
+
+<script>
+// set the following IP address to that of the machine running the node server websocketServer.js
+var connection = new WebSocket('ws://127.0.0.1:8011/');//127.0.0.1
+
+connection.onopen = function () {
+	//send browser identity string
+	connection.send(JSON.stringify('I am a web browser'));
+};
+
+connection.onerror = function (error) {
+	console.log('WebSocket Error ', error);
+};
+
+
+connection.onmessage = function (e) {
+	let parsed=JSON.parse(e.data)//tryParseJSONObject(e.data);
+	console.log('received: ', parsed?parsed:e.data);
+	if(parsed.rgb){
+		document.body.style.backgroundColor=parsed.rgb;
+	}
+}
+
+function sendRGB() {
+	var r = parseInt(document.getElementById('r').value).toString(16);
+	var g = parseInt(document.getElementById('g').value).toString(16);
+	var b = parseInt(document.getElementById('b').value).toString(16);
+	if(r.length < 2) { r = '0' + r; }
+	if(g.length < 2) { g = '0' + g; }
+	if(b.length < 2) { b = '0' + b; }
+	var rgb = '#'+r+g+b;
+	console.log('RGB: ' + rgb);
+	connection.send(JSON.stringify({rgb:rgb}));
+	// document.body.style.backgroundColor=rgb;
+}
+
+
+</script>
+
+</head>
+<body>
+LED Control:<br/>
+<br/>
+R: <input id="r" type="range" min="0" max="255" step="1" oninput="sendRGB();" /><br/>
+G: <input id="g" type="range" min="0" max="255" step="1" oninput="sendRGB();" /><br/>
+B: <input id="b" type="range" min="0" max="255" step="1" oninput="sendRGB();" /><br/>
+</body>
+</html>

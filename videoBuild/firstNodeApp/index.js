@@ -1,3 +1,4 @@
+//Basic setup of Node as a web server
 const express=require('express')
 const app=express()
 const PORT=3000
@@ -7,10 +8,13 @@ app.listen(PORT, ()=>{
     console.log('listening on port:'+PORT)
 })
 
+//serve files to incloing browser requests from the public folder
 app.use(express.static('public'))
 
+//allows Express to pick up form data from the url
 app.use(express.urlencoded({extended: false}))
 
+//imports and setup for using sessions
 const cookieParser=require('cookie-parser')
 const sessions=require('express-session')
 
@@ -26,6 +30,8 @@ app.use(sessions({
     resave: false
 }))
 
+//Our gatekeeper function, nextAction will only execute if the browser has
+// a valid, unexpired session cookie with a valid username
 function checkLoggedIn(request, response, nextAction){
     if(request.session){
         if(request.session.username){
@@ -37,16 +43,19 @@ function checkLoggedIn(request, response, nextAction){
     }
 }
 
+//listen for /app get requests and check logeed in status with sessions
 app.get('/app', checkLoggedIn, (request, response)=>{
     response.sendFile(path.join(__dirname, './views','app.html'))
 })
 
+//import our user model
 const userData=require('./models/users.js')
 
 app.get('/register',(request, response)=>{
     response.sendFile(path.join(__dirname, './views','register.html'))
 })
 
+// handle registration form posting to /register
 app.post('/register', (request, response)=>{
     let givenUsername=request.body.username
     let givenPassword=request.body.password
@@ -63,6 +72,8 @@ app.get('/login',(request, response)=>{
     response.sendFile(path.join(__dirname, './views','login.html'))
 })
 
+// handle registration form posting to /register
+//if successful create a new session cookie with username
 app.post('/login', (request, response)=>{
     let givenUsername=request.body.username
     let givenPassword=request.body.password
@@ -86,6 +97,7 @@ app.post('/logout',(request, response)=>{
     response.sendFile(path.join(__dirname, './views','notloggedin.html'))
 })
 
+// import our posts model
 const postData=require('./models/posts.js')
 
 

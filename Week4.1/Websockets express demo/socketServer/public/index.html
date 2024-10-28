@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Type some text</h2>
+    <input id="input" type="text" oninput="textChanged()">
+    <script>
+        let textInput=document.getElementById("input")
+        
+
+        function textChanged(){
+            console.log(textInput.value)
+            connection.send(JSON.stringify({message:textInput.value}));
+        }
+
+
+        //copied code
+        console.log(document.location.hostname) 
+        var connection = new WebSocket('ws://'+document.location.hostname+':8011/');//127.0.0.1
+
+        connection.onopen = function () {
+            //send browser identity string
+            connection.send(JSON.stringify('I am a web browser'));
+        };
+
+        connection.onerror = function (error) {
+            console.log('WebSocket Error ', error);
+        };
+
+
+        connection.onmessage = function (e) {
+            let parsed=JSON.parse(e.data)//tryParseJSONObject(e.data);
+            console.log('received: ', parsed?parsed:e.data);
+            textInput.value=parsed.message || ""
+            // if(parsed.rgb){
+            //     document.body.style.backgroundColor=parsed.rgb;
+            // }
+        }
+
+    
+
+    </script>
+</body>
+</html>
