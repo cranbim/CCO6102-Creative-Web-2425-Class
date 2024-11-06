@@ -32,6 +32,14 @@ app.use(sessions({
 require('dotenv').config()
 console.log(process.env.MY_ABSOLUTE_SECRET)
 
+//load mongoose and connect to the database
+const mongoose = require('mongoose')
+const mongoDBPassword=process.env.MONGODBPASSWORD
+const myUniqueDBName="CreativeWeb24ClassApp"
+
+mongoose.connect(`mongodb+srv://CCO6005-00:${mongoDBPassword}@cluster0.lpfnqqx.mongodb.net/${myUniqueDBName}?retryWrites=true&w=majority`)
+
+
 function checkLoggedIn(request, response, nextAction){
     if(request.session){
         if(request.session.username){
@@ -91,8 +99,8 @@ app.post('/logout', (request, response)=>{
 
 
 
-app.get('/getposts', (request, response)=>{
-    response.json({posts: posts.getLastNPosts(3).reverse()})
+app.get('/getposts', async (request, response)=>{
+    response.json({posts: await posts.getLastNPosts(3)})
 })
 
 app.post('/newpost', (request, response)=>{
