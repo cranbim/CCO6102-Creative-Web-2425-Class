@@ -42,7 +42,7 @@ mongoose.connect(`mongodb+srv://CCO6005-00:${mongoDBPassword}@cluster0.lpfnqqx.m
 
 function checkLoggedIn(request, response, nextAction){
     if(request.session){
-        if(request.session.username){
+        if(request.session.user){
             console.log('valid user, come on in')
             nextAction()
         } else {
@@ -66,17 +66,17 @@ app.get('/register', (request, response)=>{
     response.sendFile(path.join(__dirname, '/views', 'register.html'))
 })
 
-app.post('/register', (request, response)=>{
-    if(users.newUser(request.body.username, request.body.password)){
+app.post('/register', async (request, response)=>{
+    if(await users.newUser(request.body.username, request.body.password)){
         response.sendFile(path.join(__dirname, '/views', 'login.html'))
-        console.log(users.getUsers())
+        // console.log(users.getUsers())
     } else {
         response.sendFile(path.join(__dirname, '/views', 'registration_failed.html'))
     }
 })
 
-app.post('/login', (request, response)=>{
-   if(users.checkPassword(request.body.username, request.body.password)){
+app.post('/login', async (request, response)=>{
+   if(await users.checkPassword(request.body.username, request.body.password)){
         console.log('valid user')
         request.session.user=request.body.username
         response.sendFile(path.join(__dirname, '/views', 'app.html'))
@@ -111,7 +111,7 @@ app.post('/newpost', (request, response)=>{
     //     message: request.body.message
     // }
     // posts.postData.unshift(newPost)
-    posts.addNewPost('userX', request.body.message)
+    posts.addNewPost(request.session.user, request.body.message)
     // console.log(posts.postData)
     response.sendFile(path.join(__dirname, '/views', 'app.html'))
 
