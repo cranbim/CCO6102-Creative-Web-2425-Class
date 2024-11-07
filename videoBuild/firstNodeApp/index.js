@@ -34,6 +34,7 @@ require('dotenv').config()
 // let myPassword="secret words"
 let myPassword=process.env.MY_SECRET_PASSWORD
 console.log(myPassword)
+//changed
 
 //Our gatekeeper function, nextAction will only execute if the browser has
 // a valid, unexpired session cookie with a valid username
