@@ -30,6 +30,8 @@ app.use(sessions({
     resave: false
 }))
 
+let mySecret="I won't tell you"
+
 //Our gatekeeper function, nextAction will only execute if the browser has
 // a valid, unexpired session cookie with a valid username
 function checkLoggedIn(request, response, nextAction){
