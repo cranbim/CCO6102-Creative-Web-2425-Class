@@ -31,10 +31,12 @@ app.use(sessions({
 }))
 
 require('dotenv').config()
-// let myPassword="secret words"
-let myPassword=process.env.MY_SECRET_PASSWORD
-console.log(myPassword)
-//changed
+
+const mongoPassword=process.env.MONGODB_PASSWORD
+
+const mongoose=require('mongoose')
+const myDatabaseName="CCO6102CW24VideoDemo"
+mongoose.connect(`mongodb+srv://CCO6005-00:${mongoPassword}@cluster0.lpfnqqx.mongodb.net/${myDatabaseName}?retryWrites=true&w=majority`)
 
 //Our gatekeeper function, nextAction will only execute if the browser has
 // a valid, unexpired session cookie with a valid username
@@ -62,10 +64,10 @@ app.get('/register',(request, response)=>{
 })
 
 // handle registration form posting to /register
-app.post('/register', (request, response)=>{
+app.post('/register', async (request, response)=>{
     let givenUsername=request.body.username
     let givenPassword=request.body.password
-    if(userData.addNewUser(givenUsername, givenPassword)){
+    if(await userData.addNewUser(givenUsername, givenPassword)){
         console.log('registration successful')
         response.sendFile(path.join(__dirname, './views','login.html'))
     } else {
@@ -80,10 +82,10 @@ app.get('/login',(request, response)=>{
 
 // handle registration form posting to /register
 //if successful create a new session cookie with username
-app.post('/login', (request, response)=>{
+app.post('/login', async (request, response)=>{
     let givenUsername=request.body.username
     let givenPassword=request.body.password
-    if(userData.checkPassword(givenUsername, givenPassword)){
+    if(await userData.checkPassword(givenUsername, givenPassword)){
         console.log('these match come on in')
         request.session.username=givenUsername
         response.sendFile(path.join(__dirname, './views','app.html'))
@@ -107,8 +109,8 @@ app.post('/logout',(request, response)=>{
 const postData=require('./models/posts.js')
 
 
-app.get('/data',(request, response)=>{
-    response.json({posts:postData.getRecentPosts(3).reverse()})
+app.get('/data', async (request, response)=>{
+    response.json({posts: await postData.getRecentPosts(3)})
 })
 
 app.post('/newpost',(request, response)=>{

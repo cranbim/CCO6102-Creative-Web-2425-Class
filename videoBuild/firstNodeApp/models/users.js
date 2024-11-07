@@ -1,20 +1,33 @@
-const userData=[
-    {
-        username: 'user1',
-        password: '123'
-    },
-    {
-        username: 'user2',
-        password: '456'
-    }
-]
+// const userData=[
+//     {
+//         username: 'user1',
+//         password: '123'
+//     },
+//     {
+//         username: 'user2',
+//         password: '456'
+//     }
+// ]
 
-function checkUser(givenUser){
-    return userData.find(user=>user.username==givenUser)
+const mongoose=require('mongoose')
+const {Schema, model} = mongoose
+
+const userSchema = new Schema({
+    username: String,
+    password: String
+})
+
+const userData = model('User', userSchema)
+
+async function checkUser(givenUser){
+    // return userData.find(user=>user.username==givenUser)
+    let matchedUser=null
+    matchedUser= await userData.findOne({username:givenUser})
+    return matchedUser
 }
 
-function checkPassword(givenUser, givenPassword){
-    let matchedUser=checkUser(givenUser)
+async function checkPassword(givenUser, givenPassword){
+    let matchedUser=await checkUser(givenUser)
     if(matchedUser){
         return givenPassword==matchedUser.password
     }
@@ -22,15 +35,19 @@ function checkPassword(givenUser, givenPassword){
     return false
 }
 
-function addNewUser(givenUser, givenPassword){
-    if(checkUser(givenUser)){
+async function addNewUser(givenUser, givenPassword){
+    if(await checkUser(givenUser)){
         return false
     } else {
         let newUser={
             username: givenUser,
             password: givenPassword
         }
-        userData.push(newUser)
+        // userData.push(newUser)
+        userData.create(newUser)
+        .catch(err=>{
+            console.log("Error: "+err)
+        })
         return true
     }
 }
