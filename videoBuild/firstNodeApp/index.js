@@ -30,7 +30,7 @@ app.use(sessions({
     resave: false
 }))
 
-let mySecret="I won't tell you"
+let myPassword="secret words"
 
 //Our gatekeeper function, nextAction will only execute if the browser has
 // a valid, unexpired session cookie with a valid username
