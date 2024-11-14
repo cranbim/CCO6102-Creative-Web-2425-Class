@@ -2,6 +2,9 @@ const express= require('express')
 const app=express()
 const path=require('path')
 
+require('dotenv').config()
+console.log(process.env.MY_TOTAL_SECRET)
+
 const posts=require('./models/posts.js')
 
 const users=require('./models/users.js')
