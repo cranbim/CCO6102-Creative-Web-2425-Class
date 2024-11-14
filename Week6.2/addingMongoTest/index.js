@@ -30,7 +30,7 @@ app.use(sessions({
 }))
 
 require('dotenv').config()
-console.log(process.env.MY_ABSOLUTE_SECRET)
+// console.log(process.env.MY_ABSOLUTE_SECRET)
 
 //load mongoose and connect to the database
 const mongoose = require('mongoose')

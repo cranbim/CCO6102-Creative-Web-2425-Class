@@ -5,6 +5,13 @@ const path=require('path')
 require('dotenv').config()
 console.log(process.env.MY_TOTAL_SECRET)
 
+const mongoose=require('mongoose')
+const mongoDBpassword=process.env.MONGODB_PASSWORD
+const myAppDBName="CCO610224App"
+const connectionString=`mongodb+srv://CCO6005-00:${mongoDBpassword}@cluster0.lpfnqqx.mongodb.net/${myAppDBName}?retryWrites=true&w=majority`
+
+mongoose.connect(connectionString)
+
 const posts=require('./models/posts.js')
 
 const users=require('./models/users.js')
@@ -58,8 +65,8 @@ app.get('/register', (request, response)=>{
     response.sendFile(path.join(__dirname, '/views', 'register.html'))
 })
 
-app.post('/register', (request, response)=>{
-    if(users.newUser(request.body.username, request.body.password)){
+app.post('/register', async (request, response)=>{
+    if(await users.newUser(request.body.username, request.body.password)){
         response.sendFile(path.join(__dirname, '/views', 'login.html'))
         console.log(users.getUsers())
     } else {
@@ -67,8 +74,8 @@ app.post('/register', (request, response)=>{
     }
 })
 
-app.post('/login', (request, response)=>{
-   if(users.checkPassword(request.body.username, request.body.password)){
+app.post('/login', async (request, response)=>{
+   if(await users.checkPassword(request.body.username, request.body.password)){
         console.log('valid user')
         request.session.user=request.body.username
         response.sendFile(path.join(__dirname, '/views', 'app.html'))
@@ -91,8 +98,11 @@ app.post('/logout', (request, response)=>{
 
 
 
-app.get('/getposts', (request, response)=>{
-    response.json({posts: posts.getLastNPosts(3).reverse()})
+app.get('/getposts', async (request, response)=>{
+    let retrievedPosts=await posts.getLastNPosts(3)
+    // console.log("index.js retrieved from posts")
+    // console.log(retrievedPosts)
+    response.json({posts: retrievedPosts})
 })
 
 app.post('/newpost', (request, response)=>{
