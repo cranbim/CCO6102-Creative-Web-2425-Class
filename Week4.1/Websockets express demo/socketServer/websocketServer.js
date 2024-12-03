@@ -10,6 +10,9 @@ app.listen(PORT, ()=>{
 
 app.use(express.static('public'))
 
+require('dotenv').config()
+console.log(process.env.NONEOFYOURBUSINESS)
+
 //setup websocket listener
 const WebSocket = require('ws')
 const wss = new WebSocket.Server({ port: 8011 },()=>{
